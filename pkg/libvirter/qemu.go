@@ -1,110 +1,121 @@
 package libvirter
 
 import (
-	"log"
+	"fmt"
 
-	libvirt "github.com/libvirt/libvirt-go"
+	"github.com/libvirt/libvirt-go"
 )
 
-type QEMUVM struct {
-	Name string
-	Disk int
-	CPU  int
-	Mem  int
-	Conn *libvirt.Connect
+const (
+	QEMUUri = "qemu:///system"
+)
+
+type QEMUConnection struct {
+	conn *libvirt.Connect
 }
 
-func (q *QEMUVM) Connector() {
-	conn, err := libvirt.NewConnect(QEMUUri)
+func NewQEMUConnection() *QEMUConnection {
+	return &QEMUConnection{}
+}
+
+func (c *QEMUConnection) Connect() error {
+	var err error
+	c.conn, err = libvirt.NewConnect(QEMUUri)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-	q.Conn = conn
-
-	/*
-		defer func() {
-			ret, err := q.Conn.Close()
-			if err != nil {
-				log.Fatal(err)
-			}
-			log.Println(ret)
-		}()
-	*/
+	return nil
 }
 
-func (q *QEMUVM) Create() {
-	if q.Conn == nil {
-		log.Fatalln("libvirt.Connect is nil")
+func (c *QEMUConnection) Disconnect() error {
+	if c.conn == nil {
+		return ErrConnectionIsNotReady
 	}
-
-}
-
-func (q *QEMUVM) Delete() {
-	if q.Conn == nil {
-		log.Fatalln("libvirt.Connect is nil")
-	}
-}
-
-func (q *QEMUVM) Start() {
-	if q.Conn == nil {
-		log.Fatalln("libvirt.Connect is nil")
-	}
-
-	dom, err := q.Conn.LookupDomainByName(q.Name)
+	_, err := c.conn.Close()
 	if err != nil {
-		log.Fatalln(err)
+		return err
+	}
+	return nil
+}
+
+func (c *QEMUConnection) Connected() (bool, error) {
+	if c.conn == nil {
+		return false, ErrConnectionIsNotReady
+	}
+	return c.conn.IsAlive()
+}
+
+func (c *QEMUConnection) Create(vm VM) error {
+	if c.conn == nil {
+		return ErrConnectionIsNotReady
+	}
+	panic("implement me")
+}
+
+func (c *QEMUConnection) Delete(vm VM) error {
+	if c.conn == nil {
+		return ErrConnectionIsNotReady
+	}
+	panic("implement me")
+}
+
+func (c *QEMUConnection) Start(vm VM) error {
+	if c.conn == nil {
+		return ErrConnectionIsNotReady
+	}
+	dom, err := c.conn.LookupDomainByName(vm.Name)
+	if err != nil {
+		return fmt.Errorf("cannot find vm by name: %w", err)
 	}
 	err = dom.Create()
 	if err != nil {
-		log.Fatalln(err)
+		return fmt.Errorf("cannot create vm: %w", err)
 	}
+	return nil
 }
 
-func (q *QEMUVM) Stop() {
-	if q.Conn == nil {
-		log.Fatalln("libvirt.Connect is nil")
+func (c *QEMUConnection) Stop(vm VM) error {
+	if c.conn == nil {
+		return ErrConnectionIsNotReady
 	}
-
-	dom, err := q.Conn.LookupDomainByName(q.Name)
+	dom, err := c.conn.LookupDomainByName(vm.Name)
 	if err != nil {
-		log.Fatalln(err)
+		return fmt.Errorf("cannot find vm by name: %w", err)
 	}
 	err = dom.Shutdown()
 	if err != nil {
-		log.Fatalln(err)
+		return fmt.Errorf("cannot shutdown vm: %w", err)
 	}
+	return nil
 }
 
-func (q *QEMUVM) Reboot() {
-	if q.Conn == nil {
-		log.Fatalln("libvirt.Connect is nil")
+func (c *QEMUConnection) Restart(vm VM) error {
+	if c.conn == nil {
+		return ErrConnectionIsNotReady
 	}
-	dom, err := q.Conn.LookupDomainByName(q.Name)
+	dom, err := c.conn.LookupDomainByName(vm.Name)
 	if err != nil {
-		log.Fatalln(err)
+		return fmt.Errorf("cannot find vm by name: %w", err)
 	}
 	err = dom.Reboot(libvirt.DOMAIN_REBOOT_ACPI_POWER_BTN)
 	if err != nil {
-		log.Fatalln(err)
+		return fmt.Errorf("cannot reboot vm: %w", err)
 	}
+	return nil
 }
 
-func (q *QEMUVM) Status() {
-	if q.Conn == nil {
-		log.Fatalln("libvirt.Connect is nil")
+func (c *QEMUConnection) Status(vm VM) (VMStatus, error) {
+	var status VMStatus
+	if c.conn == nil {
+		return status, ErrConnectionIsNotReady
 	}
-
-	dom, err := q.Conn.LookupDomainByName(q.Name)
+	dom, err := c.conn.LookupDomainByName(vm.Name)
 	if err != nil {
-		log.Fatalln(err)
+		return VMStatus{}, fmt.Errorf("cannot find vm by name: %w", err)
 	}
-	active, err := dom.IsActive()
+	status.Active, err = dom.IsActive()
 	if err != nil {
-		log.Fatalln(err)
+		return VMStatus{}, fmt.Errorf("cannot get vm status: %w", err)
 	}
-	if active {
-		log.Println("VM", q.Name, "is started")
-	} else {
-		log.Println("VM", q.Name, "is not started")
-	}
+	return status, nil
 }
