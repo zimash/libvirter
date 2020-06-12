@@ -43,7 +43,7 @@ func (vmm *VMManager) GetConnection(vmType VMType) (VMConnection, error) {
 		vmm.connections[vmType] = conn
 	}
 	alive, err := conn.Connected()
-	if err != nil {
+	if err != nil && err != ErrConnectionIsNotReady {
 		return nil, fmt.Errorf("cannot check connection status: %w", err)
 	}
 	if !alive {
