@@ -3,3 +3,8 @@ libvirter:
 
 clean:
 	rm -rf bin
+
+build: clean libvirter
+
+test:
+	go test ./...
