@@ -1,0 +1,22 @@
+name: test
+on:
+  push:
+    branches:
+      - master
+      - feat/*
+      - fix/*
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Linux packages
+      run: sudo apt update && sudo apt install libvirt-dev
+    - name: Run tests 
+      run: go test -v ./...
+
