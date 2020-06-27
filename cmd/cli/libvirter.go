@@ -37,9 +37,9 @@ func main() {
 	}
 
 	defer func() {
-		err := conn.Disconnect()
-		if err != nil {
-			log.Println("disconnect error: ", err)
+		errConn := conn.Disconnect()
+		if errConn != nil {
+			log.Println("disconnect error: ", errConn)
 		}
 	}()
 
@@ -64,7 +64,7 @@ func main() {
 		log.Fatalf("undefined action: %s\n", *action)
 	}
 	if err != nil {
-		log.Fatalf("error happend: %v\n", err)
+		log.Fatalf("error happened: %v\n", err)
 	}
 	os.Exit(0)
 }

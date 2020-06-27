@@ -8,3 +8,7 @@ build: clean libvirter
 
 test:
 	go test ./...
+
+lint:
+	golangci-lint run -v
+

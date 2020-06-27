@@ -1,0 +1,230 @@
+linters-settings:
+  govet:
+    # report about shadowed variables
+    check-shadowing: true
+
+    # settings per analyzer
+    settings:
+      printf: # analyzer name, run `go tool vet help` to see all analyzers
+        funcs: # run `go tool vet help printf` to see available settings for `printf` analyzer
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fata
+
+    # enable or disable analyzers by name
+    enable:
+      - asmdecl
+      - assign
+      - atomic
+      - bool
+      - buildtags
+      - cgocall
+      - composites
+      - compositewhitelist
+      - copylocks
+      - httpresponse
+      - lostcancel
+      - methods
+      - nilfunc
+      - printf
+      - printfuncs
+      - rangeloops
+      - shadow
+      - shadowstrict
+      - shift
+      - source
+      - structtags
+      - tests
+      - unreachable
+      - unsafeptr
+      - unusedresult
+    enable-all: false
+  golint:
+    min-confidence: 0.9
+  gocyclo:
+    # minimal code complexity to report, 30 by default (but we recommend 10-20)
+    min-complexity: 20
+  maligned:
+    suggest-new: true
+  dupl:
+    threshold: 100
+  goconst:
+    # minimal length of string constant, 3 by default
+    min-len: 3
+    # minimal occurrences count to trigger, 3 by default
+    min-occurrences: 3
+  misspell:
+    locale: EN
+  goimports:
+    local-prefixes: github.com/zimash/libverter
+  nakedret:
+    # make an issue if func has more lines of code than this setting and it has naked returns; default is 30
+    max-func-lines: 30
+  gocritic:
+    # Which checks should be enabled; can't be combined with 'disabled-checks';
+    # See https://go-critic.github.io/overview#checks-overview
+    # To check which checks are enabled run `GL_DEBUG=gocritic golangci-lint run`
+    # By default list of stable checks is used.
+    enabled-checks:
+      - appendAssign
+      - appendCombine
+      # - argOrder
+      - assignOp
+      - badCond
+      - boolExprSimplify
+      - builtinShadow
+      - captLocal
+      - caseOrder
+      # - codegenComment
+      # - commentFormatting
+      # - commentedOutCode
+      # - commentedOutImport
+      - defaultCaseOrder
+      # - deprecatedComment
+      # - docStub
+      - dupArg
+      - dupBranchBody
+      - dupCase
+      - dupSubExpr
+      - elseif
+      # - emptyFallthrough
+      # - emptyStringTest  # can be useful
+      # - equalFold
+      # - exitAfterDefer
+      - flagDeref
+      # - flagName
+      # - hexLiteral
+      - hugeParam
+      # - ifElseChain
+      - importShadow
+      - indexAlloc
+      # - initClause
+      # - methodExprCall
+      # - nestingReduce
+      # - nilValReturn
+      # - octalLiteral
+      # - offBy1
+      # - paramTypeCombine  # can be useful
+      # - ptrToRefParam
+      - rangeExprCopy
+      - rangeValCopy
+      - regexpMust
+      - singleCaseSwitch
+      - sloppyLen
+      # - sloppyReassign
+      # - stringXbytes
+      - switchTrue
+      # - typeAssertChain
+      - typeSwitchVar
+      - typeUnparen
+      - underef
+      # - unlabelStmt
+      - unlambda
+      # unnamedResult is experimental but seems to be useful and not too annoying
+      - unnamedResult
+      - unnecessaryBlock
+      - unslice
+      - valSwap
+      # - weakCond
+      # - wrapperFunc
+      # - yodaStyleExpr
+
+    settings: # settings passed to gocritic
+      hugeParam:
+        # size in bytes that makes the warning trigger (default 80)
+        # currently set to 512 because there are a lot of usage of Tenant and Config params by value and they are about 380 and 470 bytes
+        # So in order to avoid redundant warning this parameter was set too high (IMO)
+        sizeThreshold: 512
+      rangeExprCopy:
+        # size in bytes that makes the warning trigger (default 512)
+        sizeThreshold: 512
+        # whether to check test functions (default true)
+        skipTestFuncs: true
+      rangeValCopy:
+        # size in bytes that makes the warning trigger (default 128)
+        sizeThreshold: 200
+        # whether to check test functions (default true)
+        skipTestFuncs: true
+      unnamedResult:
+        # whether to check exported functions (default false)
+        checkExported: true
+  errcheck:
+    # report about not checking of errors in type assetions: `a := b.(MyStruct)`;
+    # default is false: such cases aren't reported by default.
+    check-type-assertions: false
+
+    # report about assignment of errors to blank identifier: `num, _ := strconv.Atoi(numStr)`;
+    # default is false: such cases aren't reported by default.
+    check-blank: false
+
+    # path to a file containing a list of functions to exclude from checking
+    # see https://github.com/kisielk/errcheck#excluding-functions for details
+    # exclude: /path/to/file.txt
+
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - deadcode
+    - depguard
+    - dupl
+    - errcheck
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goimports
+    - golint
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - lll
+    - misspell
+    - nakedret
+    - prealloc
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - varcheck
+
+issues:
+  # List of regexps of issue texts to exclude, empty list by default.
+  # But independently from this option we use default exclude patterns,
+  # it can be disabled by `exclude-use-default: false`. To list all
+  # excluded by default patterns execute `golangci-lint run --help`
+  # exclude: []
+
+  # Excluding configuration per-path, per-linter, per-text and per-source
+  # exclude-rules:
+    # Exclude some linters from running on tests files.
+    # - path: _test\.go
+      # linters: []
+
+  # exclude-use-default: false
+
+  # Maximum issues count per one linter. Set to 0 to disable. Default is 50.
+  max-issues-per-linter: 0
+
+  # Maximum count of issues with the same text. Set to 0 to disable. Default is 3.
+  max-same-issues: 50
+
+  # Show only new issues: if there are unstaged changes or untracked files,
+  # only those changes are analyzed, else only changes in HEAD~ are analyzed.
+  # It's a super-useful option for integration of golangci-lint into existing
+  # large codebase. It's not practical to fix all existing issues at the moment
+  # of integration: much better don't allow issues in new code.
+  # Default is false.
+  new: false
+
+  # Show only new issues created after git revision `REV`
+  # new-from-rev: REV
+
+  # Show only new issues created in git patch with set file path.
+  # new-from-patch: path/to/patch/file
+
