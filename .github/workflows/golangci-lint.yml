@@ -1,0 +1,24 @@
+name: lint
+on:
+  push:
+    branches:
+      - master
+      - feat/*
+      - fix/*
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  golanglint:
+    name: lint
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependency
+      run: sudo apt update && sudo apt install libvirt-dev
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v1
+      with:
+        version: v1.27
+
