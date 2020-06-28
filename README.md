@@ -103,7 +103,7 @@ hell	qemu	stopped	1	512	1
 To delete "asgard" machine call:
 
 ```
-$ liberter delete asgard
+$ libvirter delete asgard
 asgard deleted
 ```
 
