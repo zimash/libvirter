@@ -9,35 +9,35 @@ This tool is supposed to be used as light-weight and easy utility for virtual ma
 Create a machine "asgard" with defaults mem, disk and cpu. Machine name must be unique across your host OS.
 
 ```
-$ libverter create asgard
+$ libvirter create asgard
 asgard created
 ```
 
 Create a machine "noatun" with 2 CPU, 3 Gb drive and 100 Mb of memory use
 
 ```
-$ libverter create -c 2 -m 100 -d 3 noatun
+$ libvirter create -c 2 -m 100 -d 3 noatun
 noatun created
 ```
 
 Create a "hell" machine using predefined sizes use option `-s` (size):
 
 ```
-$ libverter create -s tiny hell
+$ libvirter create -s tiny hell
 hell created
 ```
 
 Create a QEMU machine "jotunheim" use option `-t` (type):
 
 ```
-liverter create -t qemu jotunheim
+$ libvirter create -t qemu jotunheim
 jotunheim created
 ```
 
 Create a KVM machine with a random name:
 
 ```
-$ libverter create -t kvm
+$ libvirter create -t kvm
 asdfadf created
 ```
 
@@ -46,7 +46,7 @@ asdfadf created
 To get "asgard" machine status call:
 
 ```
-$ libverter status asgard
+$ libvirter status asgard
 asgard is running
 ```
 
@@ -65,7 +65,7 @@ asgard not found
 To get more information about a machine use option `-a`: 
 
 ```
-$ libverter status -a asgard
+$ libvirter status -a asgard
 name: asgard
 state: running
 type: qemu
@@ -80,7 +80,7 @@ uptime: 1h 12m 13s
 To get VMs' list in a host OS call:
 
 ```
-$ libverter list
+$ libvirter list
 asgard
 hell
 noatun
@@ -89,7 +89,7 @@ noatun
 Also, it's possible to provide a verbose list:
 
 ```
-$ libverter list -v
+$ libvirter list -v
 name	type	state	cpu	memory	disk	uptime
 asgard	qemu	running	1	512	3	1h12m12s
 noatun	kvm	stopped	2	1024	5	
@@ -103,7 +103,7 @@ hell	qemu	stopped	1	512	1
 To delete "asgard" machine call:
 
 ```
-liberter delete asgard
+$ libvirter delete asgard
 asgard deleted
 ```
 
@@ -112,7 +112,7 @@ asgard deleted
 To start "asgard" machine call:
 
 ```
-$ libverter start asgard
+$ libvirter start asgard
 asgard started
 ```
 
@@ -121,7 +121,7 @@ asgard started
 To stop "asgard" machine call:
 
 ```
-$ libverter stop asgard
+$ libvirter stop asgard
 asgard stopped
 ```
 
@@ -130,7 +130,7 @@ asgard stopped
 To restart "asgard" machine call:
 
 ```
-$ libverter restart asgard
+$ libvirter restart asgard
 asgard restarted
 ```
 
@@ -142,6 +142,11 @@ asgard restarted
 
 ```bash
 sudo apt-get install libvirt-dev
+```
+
+#### CentOS/Fedora
+```bash
+sudo dnf install libvirt-devel
 ```
 
 ### Build project
